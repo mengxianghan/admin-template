@@ -1,0 +1,47 @@
+$font-family: -apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Helvetica Neue, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
+
+// Color Palette
+$black: #000;
+$white: #fff;
+$gray-1: #f7f8fa;
+$gray-2: #f2f3f5;
+$gray-3: #ebedf0;
+$gray-4: #dcdee0;
+$gray-5: #c8c9cc;
+$gray-6: #969799;
+$gray-7: #646566;
+$gray-8: #323233;
+$red: #f5222d;
+$blue: #1890ff;
+$orange: #faad14;
+$green: #52c41a;
+$primary: #1890ff;
+
+// Border
+$border-color: #d9d9d9;
+$border-radius-base: 4px;
+
+// Color
+$color-primary: $primary;
+$color-danger: $red;
+$color-warning: $orange;
+$color-success: $green;
+$color-info: $blue;
+
+// Spacing
+$spacing: 8px;
+
+// Shadow
+$box-shadow-base: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+// Text
+$text-color: rgba(0, 0, 0, .65);
+$text-secondary-color: rgba(0, 0, 0, 0.45);
+$text-heading-color: rgba(0, 0, 0, .85);
+$text-disabled-color: rgba(0, 0, 0, .25);
+$text-primary-color: $color-primary;
+$text-danger-color: $color-danger;
+$text-warning-color: $color-warning;
+$text-success-color: $color-success;
+$text-info-color: $color-info;
+

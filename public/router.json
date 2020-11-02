@@ -1,0 +1,52 @@
+{
+  "code": "200",
+  "msg": "",
+  "data": {
+    "format": false,
+    "list": [
+      {
+        "path": "dashboard",
+        "name": "dashboard",
+        "component": "RouteView",
+        "redirect": "/dashboard/workplace",
+        "meta": {
+          "icon": "dashboard",
+          "title": "仪表盘",
+          "isMenu": true
+        },
+        "children": [
+          {
+            "path": "workplace",
+            "name": "workplace",
+            "component": "dashboard/workplace",
+            "meta": {
+              "title": "工作台",
+              "isMenu": true
+            }
+          }
+        ]
+      },
+      {
+        "path": "list",
+        "name": "list",
+        "component": "RouteView",
+        "meta": {
+          "icon": "table",
+          "title": "列表",
+          "isMenu": true
+        },
+        "children": [
+          {
+            "path": "table",
+            "name": "table",
+            "component": "list/table",
+            "meta": {
+              "title": "基础列表",
+              "isMenu": true
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
