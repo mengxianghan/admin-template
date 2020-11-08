@@ -15,6 +15,11 @@ const state = {
     indexRouter: {}
 }
 
+const getters = {
+    menuList: state => state.menuList,
+    indexRouter: state => state.indexRouter,
+}
+
 const mutations = {
     /**
      * 设置路由
@@ -71,6 +76,7 @@ const actions = {
 export default {
     namespaced: true,
     state,
+    getters,
     mutations,
     actions
 }

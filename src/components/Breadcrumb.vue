@@ -9,7 +9,7 @@
             <a-breadcrumb-item>
                 <a-icon type="home"/>
             </a-breadcrumb-item>
-            <a-breadcrumb-item v-for="(item,index) in breadcrumbList"
+            <a-breadcrumb-item v-for="(item,index) in list"
                                :key="index">
                 {{item.meta.title}}
             </a-breadcrumb-item>
@@ -18,37 +18,20 @@
 </template>
 
 <script>
-    import {mapActions, mapState} from 'vuex'
-
     export default {
         name: "Breadcrumb",
         data() {
-            return {}
-        },
-        computed: {
-            ...mapState({
-                breadcrumbList: state => state.breadcrumb.breadcrumbList
-            })
-        },
-        watch: {
-            '$route'(to, from) {
-                this.setBreadcrumbList({
-                    to,
-                    from
-                })
+            return {
+                list: []
             }
         },
-        created() {
+        watch: {
+            '$route'(to) {
+                this.list = to.matched.filter(item => item.path)
+            }
         },
         mounted() {
-            this.setBreadcrumbList({
-                to: this.$route
-            })
-        },
-        methods: {
-            ...mapActions({
-                setBreadcrumbList: 'breadcrumb/setBreadcrumbList'
-            })
+            this.list = this.$route.matched.filter(item => item.path)
         }
     }
 </script>

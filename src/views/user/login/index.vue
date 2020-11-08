@@ -37,7 +37,7 @@
 </template>
 
 <script>
-    import {mapGetters, mapState} from 'vuex'
+    import {mapGetters} from 'vuex'
 
     export default {
         data() {
@@ -46,10 +46,10 @@
             }
         },
         computed: {
-            ...mapState({
-                indexRouter: state => state.router.indexRouter
-            }),
-            ...mapGetters(['appComplete'])
+            ...mapGetters({
+                appComplete: 'appComplete',
+                indexRouter: 'router/indexRouter'
+            })
         },
         mounted() {
         },

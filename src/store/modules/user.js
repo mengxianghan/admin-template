@@ -10,6 +10,12 @@ const state = {
     isLogin: false
 }
 
+const getters = {
+    token: state => state.token,
+    userInfo: state => state.userInfo,
+    isLogin: state => state.isLogin
+}
+
 const mutations = {
     /**
      * 设置用户信息
@@ -88,6 +94,7 @@ const actions = {
 export default {
     namespaced: true,
     state,
+    getters,
     mutations,
     actions
 }

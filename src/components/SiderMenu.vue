@@ -26,7 +26,7 @@
 
 <script>
     import {Menu} from 'ant-design-vue'
-    import {mapState} from 'vuex'
+    import {mapGetters} from 'vuex'
 
     const SubMenu = {
         template: `
@@ -70,8 +70,8 @@
             }
         },
         computed: {
-            ...mapState({
-                menuList: state => state.router.menuList
+            ...mapGetters({
+                menuList: 'router/menuList'
             }),
             rootSubmenuKeys() {
                 return this.menuList.map(item => item.name)
@@ -124,7 +124,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 64px;
+            height: 48px;
             white-space: nowrap;
 
             img {

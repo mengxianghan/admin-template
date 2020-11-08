@@ -3,17 +3,16 @@
         <a-layout-sider
                 breakpoint="lg"
                 :collapsible="collapsible"
-                width="256px">
+                width="208px">
             <sider-menu/>
         </a-layout-sider>
         <a-layout>
             <a-layout-header :style="headerStyle">
                 <global-header></global-header>
             </a-layout-header>
+            <multi-tab></multi-tab>
             <a-layout-content :style="contentStyle">
-                <keep-alive>
-                    <router-view/>
-                </keep-alive>
+                <router-view/>
             </a-layout-content>
         </a-layout>
     </a-layout>
@@ -29,10 +28,11 @@
                     padding: '0',
                     position: 'sticky',
                     top: '0',
-                    zIndex: 100
+                    zIndex: 100,
+                    height: '48px'
                 },
                 contentStyle: {
-                    margin: '24px',
+                    margin: '16px',
                     minHeight: 'auto'
                 },
                 footerStyle: {

@@ -134,6 +134,9 @@
                 data
             }
         },
+        created(){
+            console.log('2')
+        },
         methods: {
             onComplete() {
 

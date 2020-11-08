@@ -8,6 +8,11 @@
     export default {
         data() {
             return {}
+        },
+        created(){
+            console.log('1')
+        },
+        methods: {
         }
     }
 </script>
