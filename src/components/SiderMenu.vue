@@ -13,7 +13,8 @@
                 @openChange="onOpenChange">
             <template v-for="item in menuList">
                 <template v-if="item.meta.isMenu">
-                    <a-menu-item v-if="!item.children" :key="item.name">
+                    <a-menu-item v-if="!item.children"
+                                 :key="item.name">
                         <a-icon v-if="item.meta.icon" :type="item.meta.icon"/>
                         <span>{{ item.meta.title }}</span>
                     </a-menu-item>
@@ -37,7 +38,8 @@
                 </span>
                 <template v-for="item in menuInfo.children">
                     <template v-if="item.meta.isMenu">
-                        <a-menu-item v-if="!item.children" :key="item.name">
+                        <a-menu-item v-if="!item.children"
+                                     :key="item.name">
                             <a-icon v-if="item.meta.icon" :type="item.meta.icon"/>
                             <span>{{ item.meta.title }}</span>
                         </a-menu-item>
