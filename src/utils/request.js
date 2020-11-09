@@ -72,6 +72,17 @@ class Http {
     constructor(config = {}) {
         this.config = {
             timeout: 0,
+            transformResponse: [function transformResponse(data) {
+                if (typeof data === 'string') {
+                    try {
+                        let c1 = data.toString().replace(/:\d{17,}/g, ':"@rr$&"').replace(/@rr:\s/g, '').replace(/@rr:/g, '')
+                        let c2 = c1.replace(/:\d{1,}\.\d+/g, ':"@rr$&"').replace(/@rr:\s/g, '').replace(/@rr:/g, '')
+                        data = JSON.parse(c2)
+                    } catch (e) {
+                    }
+                }
+                return data
+            }],
             ...config
         }
     }

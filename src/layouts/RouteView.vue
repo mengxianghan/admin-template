@@ -1,17 +1,13 @@
 <template>
-    <keep-alive>
-        <router-view :key="key"/>
-    </keep-alive>
+    <router-view/>
 </template>
 
 <script>
+    import {mapGetters} from 'vuex'
+
     export default {
         name: 'RouteView',
-        computed: {
-            key() {
-                return this.$route.name
-            }
-        },
+        computed: {},
     }
 </script>
 
