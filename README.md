@@ -20,22 +20,27 @@ npm install --registry https://registry.npm.taobao.org
 npm run serve
 ```
 
-### 生产环境打包
+### 开发环境
 ```
-npm run build:prod
-```
-
-### 预生产环境打包
-```
-npm run build:pre
+npm run build:dev
 ```
 
-### 测试环境打包
+### 测试环境
 ```
 npm run build:test
 ```
 
-### 性能分析包
+### 预生产环境
+```
+npm run build:pre
+```
+
+### 生产环境
+```
+npm run build:prod
+```
+
+### 性能分析
 ```
 npm run build:report
 ```
