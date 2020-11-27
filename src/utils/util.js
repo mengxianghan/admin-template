@@ -15,3 +15,35 @@ export function uuid() {
         return v.toString(16)
     })
 }
+
+/**
+ * 数据映射
+ * @param list 数据源
+ * @param structure 新结构
+ *          {
+ *              新字段名称: 对应数据中的字段名
+ *          }
+ * @param expand 拓展数据
+ * @returns {[]}
+ */
+export function mapping(list, structure = {}, expand = {}) {
+    let newList = []
+    if (!Array.isArray(list)) return []
+    list.forEach((item) => {
+        let temp = {...expand}
+        for (let key in structure) {
+            if (structure[key] instanceof Function) {
+                temp[key] = structure[key](item)
+            } else {
+                let value = item[structure[key]]
+                if ((value instanceof Array) && value.length) {
+                    temp[key] = mapping(value, structure, expand)
+                } else {
+                    temp[key] = (typeof value !== 'undefined') && value !== '' ? value : ''
+                }
+            }
+        }
+        newList.push(temp)
+    })
+    return newList
+}
