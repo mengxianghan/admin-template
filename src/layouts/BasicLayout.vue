@@ -10,6 +10,7 @@
             <a-layout-header :style="headerStyle">
                 <global-header></global-header>
             </a-layout-header>
+            <multi-tab></multi-tab>
             <a-layout-content :style="contentStyle">
                 <router-view/>
             </a-layout-content>

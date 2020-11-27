@@ -130,8 +130,9 @@
             white-space: nowrap;
 
             img {
-                width: 28px;
-                height: 28px;
+                width: 32px;
+                height: 32px;
+                border-radius: 6px;
             }
 
             h1 {
