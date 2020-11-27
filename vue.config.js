@@ -26,14 +26,12 @@ const assetsCDN = {
         'vue': 'Vue',
         'vuex': 'Vuex',
         'vue-router': 'VueRouter',
-        'qs': 'Qs',
-        'lodash': 'lodash',
-        'jschardet': 'jschardet',
-        'wx-js-sdk': 'wx',
-        'nprogress': 'NProgress',
-        'js-md5': 'md5',
         'axios': 'axios',
-        'ant-design-vue': 'antd'
+        'qs': 'Qs',
+        'ant-design-vue': 'antd',
+        'jschardet': 'jschardet',
+        'nprogress': 'NProgress',
+        'js-md5': 'md5'
     },
     css: {
         env: [
@@ -46,15 +44,13 @@ const assetsCDN = {
             'https://cdn.jsdelivr.net/npm/tinymce-i18n@20.4.4/langs5/zh_CN.js'
         ],
         production: [
-            '//cdn.jsdelivr.net/npm/ant-design-vue@1.6.2/lib/index.min.js',
             '//cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js',
             '//cdn.jsdelivr.net/npm/vuex@3.4.0/dist/vuex.min.js',
             '//cdn.jsdelivr.net/npm/vue-router@3.3.4/dist/vue-router.min.js',
-            '//cdn.jsdelivr.net/npm/qs@6.9.4/lib/index.min.js',
-            '//cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js',
-            '//cdn.jsdelivr.net/npm/jschardet@2.1.1/dist/jschardet.min.js',
             '//cdn.jsdelivr.net/npm/axios@0.19.2/index.min.js',
-            '//cdn.jsdelivr.net/npm/wx-js-sdk@0.0.7/lib/index.min.js',
+            '//cdn.jsdelivr.net/npm/qs@6.9.4/lib/index.min.js',
+            '//cdn.jsdelivr.net/npm/ant-design-vue@1.6.2/lib/index.min.js',
+            '//cdn.jsdelivr.net/npm/jschardet@2.1.1/dist/jschardet.min.js',
             '//cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js',
             '//cdn.jsdelivr.net/npm/js-md5@0.7.3/src/md5.min.js'
         ]
