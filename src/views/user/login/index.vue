@@ -3,7 +3,8 @@
         <div class="user-layout-content">
             <div class="user-layout-top">
                 <div class="user-layout-header">
-                    {{title}}
+                    <img src="/images/logo.png">
+                    <h1>{{title}}</h1>
                 </div>
                 <div class="user-layout-desc">
                     欢迎使用管理系统
@@ -86,8 +87,20 @@
         }
 
         &-header {
-            font-size: 30px;
-            font-width: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            img {
+                height: 44px;
+                margin-right: 16px;
+            }
+
+            h1 {
+                font-size: 30px;
+                font-weight: 500;
+                margin: 0;
+            }
         }
 
         &-desc {
