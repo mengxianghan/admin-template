@@ -1,7 +1,11 @@
 <template>
     <header class="global-header">
-        <div class="global-header__left pl-2">
-            <breadcrumb></breadcrumb>
+        <div class="global-header__left">
+            <!--<breadcrumb></breadcrumb>-->
+            <div class="global-header__action">
+                <a-icon :type="collapsed ? 'menu-unfold' : 'menu-fold'"
+                        @click="handleToggleCollapsed"/>
+            </div>
         </div>
         <div class="global-header__right">
             <!--<div class="global-header__action">
@@ -33,6 +37,12 @@
 
     export default {
         name: 'LayoutHeader',
+        props: {
+            collapsed: {
+                type: Boolean,
+                default: false
+            }
+        },
         computed: {
             ...mapGetters(['isLogin', 'userInfo'])
         },
@@ -49,6 +59,9 @@
                         }
                     })
                 }
+            },
+            handleToggleCollapsed() {
+                this.$emit('update:collapsed', !this.collapsed)
             }
         }
     }

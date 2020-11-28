@@ -3,14 +3,15 @@
         <a-layout-sider
                 breakpoint="lg"
                 :collapsible="collapsible"
+                :collapsed="collapsed"
                 width="208px">
             <sider-menu/>
         </a-layout-sider>
         <a-layout>
             <a-layout-header :style="headerStyle">
-                <global-header></global-header>
+                <global-header :collapsed.sync="collapsed"></global-header>
             </a-layout-header>
-            <multi-tab></multi-tab>
+            <!--<multi-tab></multi-tab>-->
             <a-layout-content :style="contentStyle">
                 <router-view/>
             </a-layout-content>
@@ -38,11 +39,16 @@
                 footerStyle: {
                     textAlign: 'center'
                 },
-                collapsible: false
+                collapsible: false,
+                collapsed: false
             }
         },
         computed: {},
-        methods: {}
+        methods: {
+            handleToggleCollapsed() {
+                this.collapsed = !this.collapsed
+            }
+        }
     }
 </script>
 
