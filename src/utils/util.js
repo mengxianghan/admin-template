@@ -5,10 +5,10 @@
  */
 
 /**
- * uuid
+ * guid
  * @returns {string}
  */
-export function uuid() {
+export function guid() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         var r = Math.random() * 16 | 0,
             v = c == 'x' ? r : (r & 0x3 | 0x8)
@@ -21,7 +21,7 @@ export function uuid() {
  * @param list 数据源
  * @param structure 新结构
  *          {
- *              新字段名称: 对应数据中的字段名
+ *              新字段名称: 对应数据中的字段名 || fn
  *          }
  * @param expand 拓展数据
  * @returns {[]}
