@@ -21,7 +21,7 @@
                     </div>
                     <a-menu slot="overlay"
                             @click="handleClick">
-                        <a-menu-item key="signOut">
+                        <a-menu-item key="logout">
                             <a-icon type="logout"/>
                             退出登录
                         </a-menu-item>
@@ -48,7 +48,7 @@
         },
         methods: {
             handleClick({key}) {
-                if (key === 'signOut') {
+                if (key === 'logout') {
                     this.$confirm({
                         title: '注销登录？',
                         okText: '确认',

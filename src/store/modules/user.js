@@ -3,46 +3,50 @@
  * @Date: 2020-10-08
  * @Description: user.js
  */
+import storage from "@/utils/storage"
 
 const state = {
-    token: '',
-    userInfo: {},
-    isLogin: false
+    isLogin: storage.getIsLogin() || false,
+    userInfo: storage.getUserInfo() || null,
+    token: storage.getToken() || ''
 }
 
 const getters = {
-    token: state => state.token,
+    isLogin: state => state.isLogin,
     userInfo: state => state.userInfo,
-    isLogin: state => state.isLogin
+    token: state => state.token
 }
 
 const mutations = {
     /**
+     * 设置登录状态
+     * @param state
+     * @param {Boolean} isLogin
+     * @constructor
+     */
+    SET_IS_LOGIN(state, isLogin = false) {
+        state.isLogin = isLogin
+        storage.setIsLogin(isLogin)
+    },
+    /**
      * 设置用户信息
      * @param state
-     * @param userInfo
+     * @param {Object} userInfo
      * @constructor
      */
     SET_USER_INFO(state, userInfo = {}) {
         state.userInfo = userInfo
-    },
-    /**
-     * 设置登录状态
-     * @param state
-     * @param status
-     * @constructor
-     */
-    SET_IS_LOGIN(state, status = false) {
-        state.isLogin = status
+        storage.setUserInfo(userInfo)
     },
     /**
      * 设置 token
      * @param state
-     * @param token
+     * @param {String} token
      * @constructor
      */
     SET_TOKEN(state, token = '') {
         state.token = token
+        storage.setToken(token)
     }
 }
 
@@ -50,31 +54,26 @@ const actions = {
     /**
      * 登录
      * @param commit
-     * @param rootState
-     * @param username
-     * @param password
+     * @param {String} username
+     * @param {String} password
      * @returns {Promise<unknown>}
      */
-    login({commit}, params) {
+    login({commit}, {username = '', password = ''}) {
         return new Promise(async (resolve, reject) => {
-            const res = await window.$xy.api.user.login(params)
-            if (res.code === 200) {
-                commit('SET_USER_INFO', res.data)
+            const res = await window.$xy.api.user.login({
+                username,
+                password
+            })
+            const {code, data} = res
+            if (code === '200') {
+                const {username, token} = data
+                commit('SET_USER_INFO', {
+                    username
+                })
                 commit('SET_IS_LOGIN', true)
-                commit('SET_TOKEN', '')
+                commit('SET_TOKEN', token)
             }
             resolve(res)
-        })
-    },
-    /**
-     * 模拟登录
-     * @param commit
-     * @returns {Promise}
-     */
-    mockLogin({commit}) {
-        return new Promise((resolve, reject) => {
-            commit('SET_IS_LOGIN', true)
-            resolve(true)
         })
     },
     /**
@@ -83,7 +82,7 @@ const actions = {
      */
     logout({commit}) {
         return new Promise((resolve) => {
-            commit('SET_USER_INFO', {})
+            commit('SET_USER_INFO', null)
             commit('SET_IS_LOGIN', false)
             commit('SET_TOKEN', '')
             resolve()

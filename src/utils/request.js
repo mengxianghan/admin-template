@@ -8,6 +8,7 @@
 import jschardet from 'jschardet'
 import axios from 'axios'
 import {message} from 'ant-design-vue'
+import store from '@/store'
 
 const instance = axios.create()
 const CancelToken = axios.CancelToken
@@ -35,10 +36,12 @@ let pending = []
  * 请求拦截
  */
 instance.interceptors.request.use(request => {
-    request.headers = {
-        ...req.headers,
-        'AUTH-TOKEN': 'Bearer '
+    const {isLogin, token} = store.getters
+
+    if(isLogin){
+        request.headers['AUTH-TOKEN'] = `Bearer ${token}`
     }
+
     // cancelPending(req)
     // req.cancelToken = new CancelToken((c) => {
     //     pending.push({
@@ -46,6 +49,7 @@ instance.interceptors.request.use(request => {
     //         cancel: c
     //     })
     // })
+
     return request
 }, err => {
     return Promise.reject(err)

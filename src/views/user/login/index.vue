@@ -11,15 +11,31 @@
                 </div>
             </div>
             <div class="user-layout-main">
-                <a-form>
+                <a-form :form="form">
                     <a-form-item>
-                        <a-input size="large">
+                        <a-input size="large"
+                                 v-decorator="[
+                                    'username',
+                                    {
+                                        rules: [
+                                            { required: true, message: '请输入用户名' }
+                                        ]
+                                    }
+                                 ]">
                             <a-icon slot="prefix"
                                     type="user"/>
                         </a-input>
                     </a-form-item>
                     <a-form-item>
-                        <a-input size="large">
+                        <a-input size="large"
+                                 v-decorator="[
+                                     'password',
+                                     {
+                                         rules: [
+                                             { required: true, message: '请输入密码' }
+                                         ]
+                                     }
+                                 ]">
                             <a-icon slot="prefix"
                                     type="lock"/>
                         </a-input>
@@ -28,6 +44,7 @@
                         <a-button type="primary"
                                   size="large"
                                   block
+                                  :loading="loading"
                                   @click="handleLogin">登录
                         </a-button>
                     </a-form-item>
@@ -38,12 +55,15 @@
 </template>
 
 <script>
+    import form from '@/mixins/form'
     import {mapGetters} from 'vuex'
 
     export default {
+        mixins: [form],
         data() {
             return {
-                title: process.env.VUE_APP_TITLE
+                title: process.env.VUE_APP_TITLE,
+                loading: false
             }
         },
         computed: {
@@ -55,16 +75,31 @@
         mounted() {
         },
         methods: {
-            handleLogin() {
-                this.$store.dispatch('user/mockLogin').then(() => {
-                    if (this.appComplete) {
-                        this.$router.push(this.indexRouter)
-                    } else {
-                        this.$store.dispatch('app/init').then(() => {
-                            this.$router.push(this.indexRouter)
-                        })
-                    }
-                })
+            /**
+             * 登录
+             */
+            async handleLogin() {
+                try {
+                    this.form.validateFieldsAndScroll(async (errors, values) => {
+                        if (!errors) {
+                            this.loading = true
+                            const {code, data} = await this.$store.dispatch('user/login', {
+                                ...values
+                            })
+                            this.loading = false
+                            if (this.appComplete) {
+                                this.$router.push(this.indexRouter)
+                            } else {
+                                this.$store.dispatch('app/init').then(() => {
+                                    this.$router.push(this.indexRouter)
+                                })
+                            }
+                        }
+                    })
+
+                } catch (e) {
+                    this.loading = false
+                }
             }
         }
     }

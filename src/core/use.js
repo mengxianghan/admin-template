@@ -10,6 +10,11 @@ import '@/assets/style/index.scss'
 
 Vue.use(antd)
 
+// 模拟数据
+if (process.env.VUE_APP_MOCK === 'true') {
+    require('@/mock')
+}
+
 window.$xy = Vue.prototype.$xy = {
     ali,
     api

@@ -14,8 +14,7 @@ import {upperFirst} from 'lodash'
 const storageMap = [
     {key: 'token', type: 'local'},
     {key: 'userInfo', type: 'local', dataType: 'object'},
-    {key: 'isLogin', type: 'local'},
-    {key: 'permission', type: 'local', dataType: 'object'}
+    {key: 'isLogin', type: 'local'}
 ]
 
 const storage = {}
