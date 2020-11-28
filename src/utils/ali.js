@@ -1,34 +1,87 @@
-/**
- * @Author: 孟祥涵
- * @Date: 2020-10-08
- * @Description: 阿里 oss 文件上传
- */
-
-import suffix from 'file-suffix'
 import moment from 'moment'
 import OSS from 'ali-oss'
-import {uuid} from './util'
+import {last} from 'lodash'
+import {guid} from './util'
 import {isUrl} from './validate'
+
+/**
+ * 默认配置
+ * @type {{headers: {"Cache-Control": string}}}
+ */
+const defaultOptions = {
+    headers: {
+        'Cache-Control': 'public'
+    }
+}
+
+/**
+ * 生成文件路径
+ * @param blob  文件流
+ * @return {string}
+ */
+function generateFilePath(blob, folder) {
+    const fileSuffix = last(blob.name.split('.'))
+    const fileName = `/${guid()}.${fileSuffix}`
+    const folderName = `${process.env.VUE_APP_OSS_UPLOAD_PATH}/${folder}/${moment().format('YYYY-MM-DD')}`
+    const filePath = `${folderName}/${fileName}`.replace(/\/\//g, `/`)
+
+    return filePath
+}
+
+/**
+ * 获取 oss 域名
+ * @param type
+ */
+function getDomain(type = '53') {
+    return type === '53' ? process.env.VUE_APP_OSS_DOMAIN : process.env.VUE_APP_OSS_NET_DOMAIN
+}
+
+/**
+ * 获取实例
+ * @return {Client}
+ */
+function client() {
+    return new OSS({
+        accessKeyId: process.env.VUE_APP_OSS_ACCESS_KEY_ID,
+        accessKeySecret: process.env.VUE_APP_OSS_ACCESS_KEY_SECRET,
+        bucket: process.env.VUE_APP_OSS_BUCKET,
+        region: process.env.VUE_APP_OSS_REGION,
+    })
+}
 
 /**
  * 文件上传
  * @param blob      文件流
  * @param folder    目录
+ * @param options   配置
  * @returns {Promise<void>}
  */
-export function upload(blob, folder = '') {
+export function upload(blob, folder = '', options = {}) {
     return new Promise(resolve => {
-        const fileSuffix = suffix(blob.name)
-        const fileName = `/${uuid()}.${fileSuffix}`
-        const folderName = `${process.env.VUE_APP_OSS_UPLOAD_PATH}/${folder}/${moment().format('YYYY-MM-DD')}`
-        const filePath = `${folderName}/${fileName}`.replace(/\/\//g, `/`)
-        const client = new OSS({
-            accessKeyId: process.env.VUE_APP_OSS_ACCESS_KEY_ID,
-            accessKeySecret: process.env.VUE_APP_OSS_ACCESS_KEY_SECRET,
-            bucket: process.env.VUE_APP_OSS_BUCKET,
-            region: process.env.VUE_APP_OSS_REGION
+        const filePath = generateFilePath(blob, folder)
+        client().put(filePath, blob, {
+            ...defaultOptions,
+            ...options
+        }).then(data => {
+            resolve(data)
         })
-        client.put(filePath, blob).then(data => {
+    })
+}
+
+/**
+ * 大文件上传
+ * @param blob      文件流
+ * @param folder    目录
+ * @param options   配置
+ * @returns {Promise<void>}
+ */
+export function multipartUpload(blob, folder = '', options = {}) {
+    return new Promise(resolve => {
+        const filePath = generateFilePath(blob, folder)
+        client().multipartUpload(filePath, blob, {
+            ...defaultOptions,
+            ...options
+        }).then(data => {
             resolve(data)
         })
     })
@@ -41,7 +94,7 @@ export function upload(blob, folder = '') {
  * @returns {*}
  */
 export function getRelativePath(path, type = '53') {
-    const domain = type === '53' ? process.env.VUE_APP_OSS_DOMAIN : process.env.VUE_APP_OSS_NET_DOMAIN
+    const domain = getDomain(type)
     if (typeof path !== 'string') return ''
     return path ? path.replace(`${domain}/`, '') : ''
 }
@@ -53,7 +106,7 @@ export function getRelativePath(path, type = '53') {
  * @returns {*}
  */
 export function getFullPath(path, type = '53') {
-    const domain = type === '53' ? process.env.VUE_APP_OSS_DOMAIN : process.env.VUE_APP_OSS_NET_DOMAIN
+    const domain = getDomain(type)
     if (typeof path !== 'string') return ''
     return isUrl(path) ? path : `${domain}/${path}`
 }
