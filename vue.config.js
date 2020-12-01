@@ -49,7 +49,7 @@ const assetsCDN = {
             '//cdn.jsdelivr.net/npm/vue-router@3.3.4/dist/vue-router.min.js',
             '//cdn.jsdelivr.net/npm/axios@0.19.2/index.min.js',
             '//cdn.jsdelivr.net/npm/qs@6.9.4/lib/index.min.js',
-            '//cdn.jsdelivr.net/npm/ant-design-vue@1.6.2/lib/index.min.js',
+            '//cdn.jsdelivr.net/npm/ant-design-vue@1.7.2/lib/index.min.js',
             '//cdn.jsdelivr.net/npm/jschardet@2.1.1/dist/jschardet.min.js',
             '//cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js',
             '//cdn.jsdelivr.net/npm/js-md5@0.7.3/src/md5.min.js'

@@ -28,24 +28,31 @@
 }
 
 //Spacing
-@each $class, $property, $value in (mt, margin-top, $spacing),
-        (mb, margin-bottom, $spacing),
-        (ml, margin-left, $spacing),
-        (mr, margin-right, $spacing),
-        (mx, margin-left margin-right, $spacing),
-        (my, margin-top margin-bottom, $spacing),
-        (ma, margin-left margin-right margin-top margin-bottom, $spacing),
-        (pt, padding-top, $spacing),
-        (pb, padding-bottom, $spacing),
-        (pl, padding-left, $spacing),
-        (pr, padding-right, $spacing),
-        (px, padding-left padding-right, $spacing),
-        (py, padding-top padding-bottom, $spacing),
-        (pa, padding-left padding-right padding-top padding-bottom, $spacing) {
-    @each $size in (0 1 2 3 4 5) {
-        .#{$class}-#{$size} {
-            @each $prop in $property {
-                #{$prop}: $value * $size !important;
+@each $class, $property in (mt, margin-top),
+        (mb, margin-bottom),
+        (ml, margin-left),
+        (mr, margin-right),
+        (mx, margin-left margin-right),
+        (my, margin-top margin-bottom),
+        (ma, margin),
+        (pt, padding-top),
+        (pb, padding-bottom),
+        (pl, padding-left),
+        (pr, padding-right),
+        (px, padding-left padding-right),
+        (py, padding-top padding-bottom),
+        (pa, padding) {
+    .#{$class}-0 {
+        @each $prop in $property {
+            #{$prop}: 0 !important;
+        }
+    }
+    @each $value in (4, 5, 8) {
+        @each $multi in (1 2 3 4 5) {
+            .#{$class}-#{$value}-#{$multi} {
+                @each $prop in $property {
+                    #{$prop}: $value * $multi + px !important;
+                }
             }
         }
     }
