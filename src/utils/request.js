@@ -9,6 +9,7 @@ import jschardet from 'jschardet'
 import axios from 'axios'
 import {message} from 'ant-design-vue'
 import store from '@/store'
+import {merge} from 'lodash'
 
 const instance = axios.create()
 const CancelToken = axios.CancelToken
@@ -38,7 +39,7 @@ let pending = []
 instance.interceptors.request.use(request => {
     const {isLogin, token} = store.getters
 
-    if(isLogin){
+    if (isLogin) {
         request.headers['AUTH-TOKEN'] = `Bearer ${token}`
     }
 
@@ -74,7 +75,7 @@ instance.interceptors.response.use(response => {
 
 class Http {
     constructor(config = {}) {
-        this.config = {
+        this.config = merge({
             timeout: 0,
             transformResponse: [function transformResponse(data) {
                 if (typeof data === 'string') {
@@ -86,9 +87,8 @@ class Http {
                     }
                 }
                 return data
-            }],
-            ...config
-        }
+            }]
+        }, config)
     }
 
     /**

@@ -6,6 +6,12 @@
                 <a-icon :type="collapsed ? 'menu-unfold' : 'menu-fold'"
                         @click="handleToggleCollapsed"/>
             </div>
+            <a-tooltip title="返回"
+                       placement="bottom"
+                       class="global-header__action"
+                       @click="$router.back()">
+                <a-icon type="rollback"/>
+            </a-tooltip>
         </div>
         <div class="global-header__right">
             <!--<div class="global-header__action">
@@ -17,7 +23,7 @@
                 <a-dropdown :trigger="['click']">
                     <div class="user-info">
                         <a-avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"></a-avatar>
-                        <span v-if="isLogin">{{userInfo.username}}</span>
+                        <span v-if="isLogin">{{ userInfo.username }}</span>
                     </div>
                     <a-menu slot="overlay"
                             @click="handleClick">
@@ -33,106 +39,109 @@
 </template>
 
 <script>
-    import {mapGetters} from 'vuex'
+import {mapGetters} from 'vuex'
 
-    export default {
-        name: 'LayoutHeader',
-        props: {
-            collapsed: {
-                type: Boolean,
-                default: false
+export default {
+    name: 'LayoutHeader',
+    props: {
+        collapsed: {
+            type: Boolean,
+            default: false
+        }
+    },
+    computed: {
+        ...mapGetters(['isLogin', 'userInfo'])
+    },
+    methods: {
+        handleClick({key}) {
+            if (key === 'logout') {
+                this.$confirm({
+                    title: '注销登录？',
+                    okText: '确认',
+                    cancelText: '取消',
+                    onOk: () => {
+                        this.$store.dispatch('user/logout')
+                        location.href = process.env.VUE_APP_AUTH_SIGNOUT_ADDRESS
+                    }
+                })
             }
         },
-        computed: {
-            ...mapGetters(['isLogin', 'userInfo'])
-        },
-        methods: {
-            handleClick({key}) {
-                if (key === 'logout') {
-                    this.$confirm({
-                        title: '注销登录？',
-                        okText: '确认',
-                        cancelText: '取消',
-                        onOk: () => {
-                            this.$store.dispatch('user/logout')
-                            location.href = process.env.VUE_APP_AUTH_SIGNOUT_ADDRESS
-                        }
-                    })
-                }
-            },
-            handleToggleCollapsed() {
-                this.$emit('update:collapsed', !this.collapsed)
-            }
+        handleToggleCollapsed() {
+            this.$emit('update:collapsed', !this.collapsed)
         }
     }
+}
 </script>
 
 <style lang="scss" scoped>
-    .global-header {
+.global-header {
+    display: flex;
+    height: 100%;
+
+    &__left {
         display: flex;
         height: 100%;
 
-        &__left {
-            ::v-deep {
-                .ant-menu {
-                    border-bottom: 0;
+        ::v-deep {
+            .ant-menu {
+                border-bottom: 0;
+                height: 100%;
+
+                &-horizontal {
+                    line-height: 1;
+                }
+
+                &-item,
+                &-submenu {
                     height: 100%;
+                    top: 0;
+                    margin: 0;
+                    display: inline-flex;
+                    align-items: center;
+                }
 
-                    &-horizontal {
-                        line-height: 1;
-                    }
-
-                    &-item,
-                    &-submenu {
-                        height: 100%;
-                        top: 0;
-                        margin: 0;
-                        display: inline-flex;
-                        align-items: center;
-                    }
-
-                    &-submenu-title {
-                        height: 100%;
-                        display: flex;
-                        align-items: center;
-                    }
+                &-submenu-title {
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
                 }
             }
         }
+    }
 
-        &__right {
-            margin-left: auto;
-            display: flex;
-            height: 100%;
+    &__right {
+        margin-left: auto;
+        display: flex;
+        height: 100%;
+    }
+
+    &__action {
+        height: 100%;
+        padding: 0 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all .3s;
+        color: rgba(0, 0, 0, .65);
+
+        &:hover {
+            background: rgba(0, 0, 0, .025);
         }
 
-        &__action {
-            height: 100%;
-            padding: 0 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all .3s;
-            color: rgba(0, 0, 0, .65);
-
-            &:hover {
-                background: rgba(0, 0, 0, .025);
-            }
-
-            .anticon {
-                padding: 4px;
-            }
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            height: 100%;
-
-            .ant-avatar {
-                margin-right: 8px;
-            }
+        .anticon {
+            padding: 4px;
         }
     }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        height: 100%;
+
+        .ant-avatar {
+            margin-right: 8px;
+        }
+    }
+}
 </style>
