@@ -218,9 +218,10 @@ const treeToList = (array = []) => {
                             item?.meta?.active ?? item?.name
                         ]
                         subItem.meta.openKeys = openKeys
+                        const isRootPath = !!subItem.path.match(/^\//g)
                         return {
                             ...subItem,
-                            path: `/${item.path}/${subItem.path}`.replace(/\/{2,}/g, '/')
+                            path: isRootPath ? subItem.paht : `/${item.path}/${subItem.path}`.replace(/\/{2,}/g, '/')
                         }
                     })
                 )
