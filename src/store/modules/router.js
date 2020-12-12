@@ -8,16 +8,17 @@ import router from '@/router'
 import axios from 'axios'
 import {rootRouter, notFoundRouter} from '@/config/router'
 import * as layouts from '@/layouts'
+import {cloneDeep} from 'lodash'
 
 const state = {
-    addRouters: [],
+    addRoutes: [],
     menuList: [],
     indexRouter: {}
 }
 
 const getters = {
     menuList: state => state.menuList,
-    indexRouter: state => state.indexRouter,
+    indexRouter: state => state.indexRouter
 }
 
 const mutations = {
@@ -27,8 +28,8 @@ const mutations = {
      * @param routes
      * @constructor
      */
-    SET_ADD_ROUTERS(state, routers) {
-        state.addRouters = routers
+    SET_ADD_ROUTES(state, routes) {
+        state.addRoutes = routes
     },
     /**
      * 设置菜单
@@ -60,11 +61,11 @@ const actions = {
         return new Promise(resolve => {
             axios.get('/router.json').then(res => {
                 const {data} = res.data
-                const routers = generatorDynamicRouter(data.list, data.format)
-                const menuList = (routers.find(item => item.path === '/') && routers.find(item => item.path === '/').children) || []
+                const {routes, menus} = generatorDynamicRouter(data.list, data.format)
+                const menuList = (menus.find(item => item.path === '/') && menus.find(item => item.path === '/').children) || []
                 const indexRouter = getIndexRouter(menuList)
-                router.addRoutes(routers)
-                commit('SET_ADD_ROUTERS', routers)
+                router.addRoutes(routes)
+                commit('SET_ADD_ROUTES', routes)
                 commit('SET_MENU_LIST', menuList)
                 commit('SET_INDEX_ROUTER', indexRouter)
                 resolve()
@@ -104,14 +105,25 @@ const filterRouter = (routers, permissionList) => {
  * @returns {Promise<Router>}
  */
 const generatorDynamicRouter = (data, format = true, permissionList = false) => {
-    const menuList = []
+    // 子菜单
     const childrenMenu = format ? listToTree(data, 0) : data
+    // 有效菜单
     const effectiveMenu = permissionList === false ? childrenMenu : filterRouter(childrenMenu, permissionList)
-    rootRouter.children = effectiveMenu
-    menuList.push(rootRouter)
-    const routers = generator(menuList)
-    routers.push(notFoundRouter)
-    return routers
+    const routes = [{
+        ...rootRouter,
+        children: treeToList(effectiveMenu)
+    }]
+    routes.push(notFoundRouter)
+    const menus = []
+    menus.push({
+        ...rootRouter,
+        children: effectiveMenu
+    })
+
+    return {
+        routes: generator(routes),
+        menus: generator(menus)
+    }
 }
 
 /**
@@ -123,7 +135,7 @@ const generatorDynamicRouter = (data, format = true, permissionList = false) => 
  */
 const generator = (routerMap, parent) => {
     return routerMap.map(item => {
-        const {title, isMenu, target, icon} = item.meta || {}
+        const {title, isMenu, target, icon, active, openKeys = []} = item.meta || {}
         const currentRouter = {
             // 如果路由设置了 path，则作为默认 path，否则 路由地址 动态拼接生成如 /dashboard/workplace
             path: item.path || `${parent && parent.path || ''}/${item.key}`,
@@ -139,7 +151,9 @@ const generator = (routerMap, parent) => {
                 icon,
                 title,
                 isMenu,
-                target
+                target,
+                active,
+                openKeys
             }
         }
         // 为了防止出现后端返回结果不规范，处理有可能出现拼接出两个 反斜杠
@@ -158,7 +172,7 @@ const generator = (routerMap, parent) => {
 }
 
 /**
- * 数组转树形结构
+ * 线型转树型结构
  *
  * @param {Array} array
  * @param {String} parentId
@@ -184,6 +198,38 @@ const listToTree = (array, parentId) => {
         }
     })
     return tree
+}
+
+/**
+ * 树型结构转线型结构
+ * @param array
+ * @return {[]}
+ */
+const treeToList = (array = []) => {
+    let list = []
+    array.forEach(item => {
+        if (item.children && item.children.length) {
+            list = [
+                ...list,
+                ...treeToList(
+                    item.children.map(subItem => {
+                        const openKeys = [
+                            ...item?.meta?.openKeys ?? [],
+                            item?.meta?.active ?? item?.name
+                        ]
+                        subItem.meta.openKeys = openKeys
+                        return {
+                            ...subItem,
+                            path: `/${item.path}/${subItem.path}`.replace(/\/{2,}/g, '/')
+                        }
+                    })
+                )
+            ]
+        } else {
+            list.push(item)
+        }
+    })
+    return list
 }
 
 /**
