@@ -5,78 +5,73 @@
 -->
 <template>
     <div class="multi-tab">
-        <a-tabs :active-key="active"
+        <a-tabs :active-key="current"
                 type="editable-card"
                 hide-add
                 @change="onChange"
                 @edit="onEdit">
             <a-tab-pane v-for="(item,index) in list"
-                        :key="index" :tab="item.meta.title"
+                        :key="index"
+                        :tab="item.meta.title"
                         :closable="list.length > 1"></a-tab-pane>
         </a-tabs>
     </div>
 </template>
 
 <script>
-    import {mapGetters} from 'vuex'
+import {mapGetters} from 'vuex'
 
-    export default {
-        name: "MultiTab",
-        data() {
-            return {}
+export default {
+    name: 'MultiTab',
+    data() {
+        return {}
+    },
+    computed: {
+        ...mapGetters({
+            list: 'multiTab/list',
+            current: 'multiTab/current'
+        }),
+    },
+    watch: {
+        '$route'(to) {
+            this.onPush(to)
         },
-        computed: {
-            ...mapGetters({
-                list: 'multiTab/list',
-                active: 'multiTab/active'
-            })
+    },
+    created() {
+    },
+    mounted() {
+        this.onPush(this.$route)
+    },
+    methods: {
+        onPush(route) {
+            this.$store.dispatch('multiTab/push', {route})
         },
-        watch: {
-            '$route'(to, from) {
-                this.init()
+        onChange(key) {
+            this.$router.push(this.list[key])
+        },
+        onEdit(key, action) {
+            switch (action) {
+                case 'remove':
+                    this.$store.dispatch('multiTab/close', key)
+                    break
             }
         },
-        created() {
-        },
-        mounted() {
-            this.init()
-        },
-        methods: {
-            init() {
-                this.$store.dispatch('multiTab/init', {
-                    route: this.$route
-                })
-            },
-            onChange(activeKey) {
-                const route = this.list[activeKey]
-                this.$store.dispatch('multiTab/change', {
-                    index: activeKey
-                })
-                this.$router.push(route)
-            },
-            onEdit(targetKey, action) {
-                if (action === 'remove') {
-                    this.$store.dispatch('multiTab/remove', {
-                        index: targetKey
-                    })
-                }
-            }
-        }
-    }
+    },
+}
 </script>
 
 <style lang="scss" scoped>
-    .multi-tab {
-        $height: 40px;
+.multi-tab {
+    $height: 40px;
 
-        ::v-deep {
-            .ant-tabs-bar {
-                margin: 0;
-            }
+    ::v-deep {
+        .ant-tabs-bar {
+            margin: 0;
+        }
 
-            .ant-tabs-nav .ant-tabs-tab-active {
-                font-weight: normal;
-            }
+        .ant-tabs-nav .ant-tabs-tab-active {
+            font-weight: normal;
         }
     }
+}
 </style>

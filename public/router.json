@@ -38,7 +38,7 @@
         "children": [
           {
             "path": "table",
-            "name": "table",
+            "name": "listTable",
             "component": "list/table",
             "meta": {
               "title": "基础列表",

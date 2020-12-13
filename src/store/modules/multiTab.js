@@ -9,116 +9,119 @@ import router from '@/router'
 
 const state = {
     list: [],
-    active: 0
+    current: 0,
 }
 
 const getters = {
     list: state => state.list,
-    active: state => state.active
+    current: state => state.current,
 }
 
 const mutations = {
     /**
-     * 添加
+     * 设置当前
+     * @param state
+     * @param current
+     * @constructor
+     */
+    SET_CURRENT(state, current) {
+        state.current = current < 0 ? 0 : current
+    },
+    /**
+     * PUSH
      * @param state
      * @param route
      * @constructor
      */
-    ADD(state, {route}) {
+    PUSH(state, route) {
         state.list.push(route)
-        state.active = state.list.length - 1
     },
     /**
-     * 更新
+     * REPLACE
      * @param state
      * @param route
      * @param index
      * @constructor
      */
-    UPDATE(state, {route, index}) {
+    REPLACE(state, {route, index}) {
         state.list.splice(index, 1, route)
-        state.active = index
     },
     /**
-     * 移除
+     * 关闭
      * @param state
      * @param index
      * @constructor
      */
-    REMOVE(state, {index}) {
+    CLOSE(state, index) {
         state.list.splice(index, 1)
-        state.active = index === 0 ? 0 : index - 1
     },
-    /**
-     * 改变
-     * @param state
-     * @param index
-     * @constructor
-     */
-    CHANGE(state, {index}) {
-        state.active = index
-    }
 }
 
 const actions = {
     /**
-     * 初始化
-     * @param state
+     * Push
+     * @param dispatch
      * @param commit
+     * @param state
      * @param route
      */
-    init({state, commit}, {route}) {
-        const list = state.list
-        const index = findIndex(list, o => o.name === route.name)
-        // 判断是否已存在
+    push({dispatch, commit, state}, {route}) {
+        const {fullPath} = route
+        const index = findIndex(state.list, item => item.fullPath === fullPath)
+        // 是否已存在
         if (index > -1) {
-            // 存在则更新
-            commit('UPDATE', {
-                route,
-                index
-            })
+            // 存在
+            dispatch('replace', {route, index})
         } else {
-            // 不存在则新增
-            commit('ADD', {
-                route
-            })
+            // 不存在
+            commit('PUSH', route)
+            commit('SET_CURRENT', state.list.length - 1)
         }
     },
     /**
-     * 移除
+     * Replace
      * @param commit
+     * @param route
      * @param index
      */
-    remove({state, commit}, {index}) {
-        // 判断还有几个标签页
+    replace({commit}, {route, index}) {
+        commit('REPLACE', {
+            route,
+            index,
+        })
+        commit('SET_CURRENT', index)
+    },
+    /**
+     * 关闭
+     * @param dispatch
+     * @param commit
+     * @param state
+     * @param index
+     */
+    close({dispatch, commit, state}, index) {
+        // 最后一个标签页
         if (state.list.length === 1) {
             message.warning('至少保留一个标签页')
             return
         }
-        const current = state.active
-        // 如果删除的是当前标签页
-        if (index === current) {
-            router.push(state.list[current === 0 ? 1 : current - 1])
+        commit('CLOSE', index)
+
+        // 关闭前面的标签
+        if (index < state.current) {
+            commit('SET_CURRENT', state.current - 1)
+            return
         }
-        commit('REMOVE', {index})
+
+        // 关闭当前标签
+        if (index === state.current) {
+            commit('SET_CURRENT', index - 1)
+            // 更新标签页
+            router.push(state.list[state.current])
+        }
+
     },
-    /**
-     * 改变
-     * @param commit
-     * @param index
-     */
-    change({commit}, {index}) {
-        commit('CHANGE', {index})
+    closeAll({commit}) {
     },
-    /**
-     * 关闭
-     * @param commit
-     */
-    close({state, commit, dispatch}) {
-        dispatch('remove', {
-            index: state.active
-        })
-    }
 }
 
 export default {
@@ -126,5 +129,5 @@ export default {
     state,
     getters,
     mutations,
-    actions
+    actions,
 }

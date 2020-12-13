@@ -5,16 +5,19 @@
 </template>
 
 <script>
-    export default {
-        data() {
-            return {}
-        },
-        created(){
-            console.log('1')
-        },
-        methods: {
-        }
-    }
+export default {
+    name: 'workplace',
+    data() {
+        return {}
+    },
+    activated() {
+        console.log('activated', '1')
+    },
+    created() {
+        console.log('1')
+    },
+    methods: {},
+}
 </script>
 
 <style lang="scss" scoped>

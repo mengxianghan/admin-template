@@ -35,7 +35,7 @@
 
         <!--列表-->
         <a-table :columns="columns"
-                 :data-source="data"
+                 :data-source="list"
                  size="middle">
             <template slot="action" slot-scope="text, record">
                 <a>编辑</a>
@@ -70,86 +70,67 @@
 </template>
 
 <script>
-    import EditForm from './components/EditForm'
-    import pagination from '@/mixins/pagination'
+import EditForm from './components/EditForm'
+import pagination from '@/mixins/pagination'
 
-    const columns = [
-        {
-            dataIndex: 'name',
-            key: 'name',
-            slots: {title: 'customTitle'},
-            scopedSlots: {customRender: 'name'}
-        },
-        {
-            title: 'Age',
-            dataIndex: 'age',
-            key: 'age'
-        },
-        {
-            title: 'Address',
-            dataIndex: 'address',
-            key: 'address'
-        },
-        {
-            title: 'Tags',
-            key: 'tags',
-            dataIndex: 'tags',
-            scopedSlots: {customRender: 'tags'}
-        },
-        {
-            title: 'Action',
-            key: 'action',
-            scopedSlots: {customRender: 'action'}
+const columns = [
+    {dataIndex: 'name', key: 'name', slots: {title: 'customTitle'}, scopedSlots: {customRender: 'name'}},
+    {title: 'Age', dataIndex: 'age', key: 'age'},
+    {title: 'Address', dataIndex: 'address', key: 'address'},
+    {title: 'Tags', key: 'tags', dataIndex: 'tags', scopedSlots: {customRender: 'tags'}},
+    {title: 'Action', key: 'action', scopedSlots: {customRender: 'action'}},
+]
+export default {
+    name: 'listTable',
+    components: {EditForm},
+    mixins: [pagination],
+    data() {
+        return {
+            columns,
+            list: [
+                {
+                    key: '1',
+                    name: 'John Brown',
+                    age: 32,
+                    address: 'New York No. 1 Lake Park',
+                    tags: ['nice', 'developer'],
+                },
+                {
+                    key: '2',
+                    name: 'Jim Green',
+                    age: 42,
+                    address: 'London No. 1 Lake Park',
+                    tags: ['loser'],
+                },
+                {
+                    key: '3',
+                    name: 'Joe Black',
+                    age: 32,
+                    address: 'Sidney No. 1 Lake Park',
+                    tags: ['cool', 'teacher'],
+                },
+            ],
         }
-    ]
-    const data = [
-        {
-            key: '1',
-            name: 'John Brown',
-            age: 32,
-            address: 'New York No. 1 Lake Park',
-            tags: ['nice', 'developer']
+    },
+    activated() {
+        console.log('activated', '2')
+    },
+    created() {
+        console.log('2')
+    },
+    methods: {
+        onComplete() {
+
         },
-        {
-            key: '2',
-            name: 'Jim Green',
-            age: 42,
-            address: 'London No. 1 Lake Park',
-            tags: ['loser']
-        },
-        {
-            key: '3',
-            name: 'Joe Black',
-            age: 32,
-            address: 'Sidney No. 1 Lake Park',
-            tags: ['cool', 'teacher']
-        }
-    ]
-    export default {
-        components: {EditForm},
-        mixins: [pagination],
-        data() {
-            return {
-                columns,
-                data
+        onTableChange({current, pageSize}) {
+            this.pagination = {
+                ...this.pagination,
+                current,
+                pageSize,
             }
         },
-        created(){
-            console.log('2')
-        },
-        methods: {
-            onComplete() {
-
-            },
-            onTableChange({current, pageSize}) {
-                this.pagination = {
-                    ...this.pagination,
-                    current,
-                    pageSize
-                }
-            }
-        }
-    }
+    },
+}
 </script>
 
 <style scoped>
