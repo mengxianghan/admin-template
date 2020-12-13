@@ -15,7 +15,7 @@ const getAssetsCDN = (key) => {
     if (data[process.env.NODE_ENV]) {
         res = [
             ...res,
-            ...data[process.env.NODE_ENV]
+            ...data[process.env.NODE_ENV],
         ]
     }
     return res
@@ -27,34 +27,33 @@ const assetsCDN = {
         'vuex': 'Vuex',
         'vue-router': 'VueRouter',
         'axios': 'axios',
-        'qs': 'Qs',
+        'moment': 'moment',
         'ant-design-vue': 'antd',
         'jschardet': 'jschardet',
         'nprogress': 'NProgress',
-        'js-md5': 'md5'
     },
     css: {
         env: [
-            '//cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css'
-        ]
+            '//cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css',
+        ],
     },
     js: {
         env: [
             'https://cdn.jsdelivr.net/npm/tinymce@5.4.0/tinymce.min.js',
-            'https://cdn.jsdelivr.net/npm/tinymce-i18n@20.4.4/langs5/zh_CN.js'
+            'https://cdn.jsdelivr.net/npm/tinymce-i18n@20.4.4/langs5/zh_CN.js',
         ],
         production: [
             '//cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js',
             '//cdn.jsdelivr.net/npm/vuex@3.4.0/dist/vuex.min.js',
             '//cdn.jsdelivr.net/npm/vue-router@3.3.4/dist/vue-router.min.js',
-            '//cdn.jsdelivr.net/npm/axios@0.19.2/index.min.js',
-            '//cdn.jsdelivr.net/npm/qs@6.9.4/lib/index.min.js',
-            '//cdn.jsdelivr.net/npm/ant-design-vue@1.7.2/lib/index.min.js',
+            '//cdn.jsdelivr.net/npm/axios@0.19.2/dist/axios.min.js',
+            '//cdn.jsdelivr.net/npm/moment@2.26.0/min/moment.min.js',
+            '//cdn.jsdelivr.net/npm/moment@2.29.1/locale/zh-cn.js',
+            '//cdn.jsdelivr.net/npm/ant-design-vue@1.7.2/dist/antd.min.js',
             '//cdn.jsdelivr.net/npm/jschardet@2.1.1/dist/jschardet.min.js',
             '//cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js',
-            '//cdn.jsdelivr.net/npm/js-md5@0.7.3/src/md5.min.js'
-        ]
-    }
+        ],
+    },
 }
 
 module.exports = {
@@ -77,8 +76,8 @@ module.exports = {
         //},
         watchOptions: {
             ignored: /node_modules|dist|.git|.idea/,
-            poll: true
-        }
+            poll: true,
+        },
     },
     configureWebpack: {
         externals: isProd ? assetsCDN.externals : {},
@@ -87,9 +86,9 @@ module.exports = {
                 test: /\.(js|css)$/,
                 filename: '[path].gz[query]',
                 threshold: 10240,
-                deleteOriginalAssets: false
-            })
-        ]
+                deleteOriginalAssets: false,
+            }),
+        ],
     },
     chainWebpack: (config) => {
         config
@@ -107,14 +106,14 @@ module.exports = {
         loaderOptions: {
             less: {
                 modifyVars: {
-                    'hack': `true; @import '~@/assets/style/theme.less'`
+                    'hack': `true; @import '~@/assets/style/theme.less'`,
                 },
-                javascriptEnabled: true
+                javascriptEnabled: true,
             },
             sass: {
-                prependData: `@import '~@/assets/style/vars.scss';`
-            }
-        }
-    }
+                prependData: `@import '~@/assets/style/vars.scss';`,
+            },
+        },
+    },
 }
 
