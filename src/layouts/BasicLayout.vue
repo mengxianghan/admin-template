@@ -35,7 +35,7 @@ export default {
                 padding: '0',
                 position: 'sticky',
                 top: '0',
-                zIndex: 100,
+                zIndex: 1000,
                 height: '48px',
             },
             contentStyle: {
