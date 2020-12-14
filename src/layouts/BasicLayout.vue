@@ -11,10 +11,11 @@
             <a-layout-header :style="headerStyle">
                 <global-header :collapsed.sync="collapsed"></global-header>
             </a-layout-header>
-            <multi-tab></multi-tab>
+            <multi-tab @refresh="onRefresh"></multi-tab>
             <a-layout-content :style="contentStyle">
-                <keep-alive :include="include">
-                    <router-view/>
+                <keep-alive :include="cacheList">
+                    <router-view v-if="!refreshing"
+                                 :key="$route.fullPath"/>
                 </keep-alive>
             </a-layout-content>
         </a-layout>
@@ -25,6 +26,7 @@
 import {mapGetters} from 'vuex'
 
 export default {
+    name: 'basicLayout',
     data() {
         return {
             headerStyle: {
@@ -45,21 +47,26 @@ export default {
             },
             collapsible: false,
             collapsed: false,
+            refreshing: false,
         }
     },
     computed: {
-        include() {
-            return this.$store.getters['multiTab/list'].map(item => item.name)
-        },
-    },
-    watch: {
-        cacheList(value) {
-            console.log(value)
-        },
+        ...mapGetters({
+            cacheList: 'multiTab/cacheList',
+        }),
     },
     methods: {
         handleToggleCollapsed() {
             this.collapsed = !this.collapsed
+        },
+        /**
+         * 刷新
+         */
+        onRefresh() {
+            this.refreshing = true
+            setTimeout(() => {
+                this.refreshing = false
+            }, 100)
         },
     },
 }

@@ -8,13 +8,12 @@
 export default {
     name: 'workplace',
     data() {
-        return {}
-    },
-    activated() {
-        console.log('activated', '1')
+        return {
+        }
     },
     created() {
-        console.log('1')
+    },
+    mounted() {
     },
     methods: {},
 }

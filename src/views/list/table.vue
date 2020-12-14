@@ -112,11 +112,9 @@ export default {
             ],
         }
     },
-    activated() {
-        console.log('activated', '2')
-    },
     created() {
-        console.log('2')
+    },
+    mounted() {
     },
     methods: {
         onComplete() {

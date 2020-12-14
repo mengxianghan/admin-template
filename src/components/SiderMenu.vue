@@ -54,35 +54,35 @@ const SubMenu = {
         ...Menu.SubMenu.props,
         menuInfo: {
             type: Object,
-            default: () => ({})
-        }
-    }
+            default: () => ({}),
+        },
+    },
 }
 export default {
     name: 'SiderMenu',
     components: {
-        'sub-menu': SubMenu
+        'sub-menu': SubMenu,
     },
     data() {
         return {
             title: process.env.VUE_APP_TITLE,
             collapsed: false,
             openKeys: [],
-            selectedKeys: []
+            selectedKeys: [],
         }
     },
     computed: {
         ...mapGetters({
-            menuList: 'router/menuList'
+            menuList: 'router/menuList',
         }),
         rootSubmenuKeys() {
             return this.menuList.map(item => item.name)
-        }
+        },
     },
     watch: {
         '$route'() {
             this.setSelectedMenu()
-        }
+        },
     },
     mounted() {
         this.setSelectedMenu()
@@ -111,10 +111,10 @@ export default {
         handleClick({key}) {
             if (this.$route.name === key) return
             this.$router.push({
-                name: key
+                name: key,
             })
-        }
-    }
+        },
+    },
 }
 </script>
 
@@ -131,12 +131,16 @@ export default {
             width: 32px;
             height: 32px;
             border-radius: 6px;
+            display: none;
         }
 
         h1 {
             color: #fff;
             font-size: 20px;
-            margin: 0 0 0 12px;
+            margin: 0;
+            padding: 0 12px;
+            text-overflow: ellipsis;
+            overflow: hidden;
         }
     }
 
@@ -149,6 +153,11 @@ export default {
 .ant-layout-sider-collapsed {
     .sider-menu {
         &__logo {
+
+            img {
+                display: block;
+            }
+
             h1 {
                 display: none;
             }

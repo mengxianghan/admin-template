@@ -3,10 +3,10 @@
 </template>
 
 <script>
-    export default {
-        name: 'RouteView',
-        computed: {},
-    }
+export default {
+    name: 'RouteView',
+    computed: {},
+}
 </script>
 
 <style scoped>
