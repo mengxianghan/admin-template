@@ -33,25 +33,19 @@ export const notFoundRouter = {
 
 /**
  * 基础路由
+ * 关键字：index,login,exception,404,redirect
  * @type {*[]}
  */
 export const constantRouterMap = [
     {
         path: '/',
         name: 'index',
-        redirect: '/user/login'
+        redirect: '/login'
     },
     {
-        path: '/user',
-        name: 'user',
-        component: RouteView,
-        children: [
-            {
-                path: 'login',
-                name: 'login',
-                component: () => import('@/views/user/login')
-            }
-        ]
+        path: '/login',
+        name: 'login',
+        component: () => import('@/views/user/login')
     },
     {
         path: '/exception',
@@ -62,6 +56,26 @@ export const constantRouterMap = [
                 path: '404',
                 name: '404',
                 component: () => import('@/views/exception/404')
+            }
+        ]
+    },
+    {
+        path: '/redirect/:name(.*)',
+        component: RouteView,
+        children: [
+            {
+                path: '',
+                name: 'redirect',
+                component: {
+                    template: `<div></div>`,
+                    created() {
+                        const {params: {name}, query} = this.$route
+                        this.$router.replace({
+                            name,
+                            query
+                        })
+                    }
+                }
             }
         ]
     }

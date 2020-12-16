@@ -10,13 +10,13 @@ import router from '@/router'
 const state = {
     list: [],
     cacheList: [],
-    current: 0,
+    current: 0
 }
 
 const getters = {
     list: state => state.list,
     cacheList: state => state.cacheList,
-    current: state => state.current,
+    current: state => state.current
 }
 
 const mutations = {
@@ -28,6 +28,32 @@ const mutations = {
      */
     SET_CURRENT(state, current) {
         state.current = current < 0 ? 0 : current
+    },
+    /**
+     * 添加缓存
+     * @param state
+     * @param route
+     * @constructor
+     */
+    ADD_CACHE_LIST(state, route) {
+        const {name, path} = route
+        const index = findIndex(state.list, ['path', path])
+        if (index === -1) {
+            state.cacheList.push(name)
+        }
+    },
+    /**
+     * 删除缓存
+     * @param state
+     * @param route
+     * @constructor
+     */
+    DELETE_CACHE_LIST(state, route) {
+        const {name, path} = route
+        const index = findIndex(state.list, ['path', path])
+        if (index > -1) {
+            state.cacheList.splice(index, 1)
+        }
     },
     /**
      * PUSH
@@ -43,42 +69,40 @@ const mutations = {
      * REPLACE
      * @param state
      * @param route
-     * @param index
      * @constructor
      */
-    REPLACE(state, {route, index}) {
+    REPLACE(state, {route}) {
+        const index = findIndex(state.list, ['path', route.path])
         state.list.splice(index, 1, route)
     },
     /**
      * 刷新
      * @param state
-     * @param index
+     * @param route
      * @constructor
      */
-    REFRESH(state, index) {
-        const key = state.cacheList[index]
+    REFRESH(state, route) {
+        const index = findIndex(state.cacheList, ['name', route.name])
         state.cacheList.splice(index, 1)
-        setTimeout(() => {
-            state.cacheList.push(key)
-        }, 100)
     },
     /**
      * 关闭
      * @param state
-     * @param index
+     * @param route
      * @constructor
      */
-    CLOSE(state, index) {
+    CLOSE(state, {route, index}) {
         state.list.splice(index, 1)
         state.cacheList.splice(index, 1)
     },
     /**
      * 关闭其他
      * @param state
+     * @param route
      * @param index
      * @constructor
      */
-    CLOSE_OTHER(state, index) {
+    CLOSE_OTHER(state, {route, index}) {
         const list = []
         list.push(state.list[index])
         state.list = list
@@ -86,23 +110,25 @@ const mutations = {
     /**
      * 关闭左侧
      * @param state
+     * @param route
      * @param index
      * @constructor
      */
-    CLOSE_LEFT(state, index) {
+    CLOSE_LEFT(state, {route, index}) {
         state.list.splice(0, index)
         state.cacheList.splice(0, index)
     },
     /**
      * 关闭右侧
      * @param state
+     * @param roure
      * @param index
      * @constructor
      */
-    CLOSE_RIGHT(state, index) {
+    CLOSE_RIGHT(state, {route, index}) {
         state.list.splice(index + 1)
         state.cacheList.splice(index + 1)
-    },
+    }
 }
 
 const actions = {
@@ -114,9 +140,9 @@ const actions = {
      * @param route
      */
     push({dispatch, commit, state}, {route}) {
-        const {fullPath} = route
-        const index = findIndex(state.list, item => item.fullPath === fullPath)
-        // 是否已存在
+        const {path} = route
+        const index = findIndex(state.list, item => item.path === path)
+        // 标签页是否已存在
         if (index > -1) {
             // 存在
             dispatch('replace', {route, index})
@@ -125,6 +151,7 @@ const actions = {
             commit('PUSH', route)
             commit('SET_CURRENT', state.list.length - 1)
         }
+        commit('ADD_CACHE_LIST', route)
     },
     /**
      * Replace
@@ -133,20 +160,34 @@ const actions = {
      * @param index
      */
     replace({commit}, {route, index}) {
-        commit('REPLACE', {
-            route,
-            index,
-        })
+        commit('REPLACE', {route, index})
         commit('SET_CURRENT', index)
     },
     /**
-     * 刷新
-     * @param commit
-     * @param state
+     * 切换标签页
+     * @param dispatch
+     * @param route
      * @param index
      */
-    refresh({dispatch, commit, state}, index) {
-        commit('REFRESH', index)
+    switch({dispatch}, {route, index}) {
+        router.replace(route)
+    },
+    /**
+     * 刷新
+     * @param dispatch
+     * @param commit
+     * @param state
+     * @param route
+     */
+    refresh({dispatch, commit, state}, {route, index}) {
+        commit('REFRESH', {route})
+        commit('SET_CURRENT', index)
+
+        const {name, query} = state.list[index]
+        router.replace({
+            path: `/redirect/${name}`,
+            query
+        })
     },
     /**
      * 关闭
@@ -155,13 +196,13 @@ const actions = {
      * @param state
      * @param index
      */
-    close({dispatch, commit, state}, index) {
+    close({dispatch, commit, state}, {route, index}) {
         // 最后一个标签页
         if (state.list.length === 1) {
             message.warning('至少保留一个标签页')
             return
         }
-        commit('CLOSE', index)
+        commit('CLOSE', {route, index})
 
         // 关闭前面的标签
         if (index < state.current) {
@@ -175,52 +216,53 @@ const actions = {
             // 更新标签页
             router.push(state.list[state.current])
         }
-
     },
     /**
      * 关闭其他
      * @param commit
      * @param state
+     * @param route
      * @param index
      */
-    closeOther({commit, state}, index) {
+    closeOther({commit, state}, {route, index}) {
         // 不是当前页面
         if (state.current !== index) {
             // 更新标签页
             router.push(state.list[index])
         }
-        commit('CLOSE_OTHER', index)
+        commit('CLOSE_OTHER', {route, index})
         commit('SET_CURRENT', 0)
     },
     /**
      * 关闭左侧
      * @param commit
      * @param state
+     * @param route
      * @param index
      */
-    closeLeft({commit, state}, index) {
+    closeLeft({commit, state}, {route, index}) {
         // 不是当前页
         if (state.current !== index) {
             // 更新标签页
             router.push(state.list[index])
         }
-        commit('CLOSE_LEFT', index)
+        commit('CLOSE_LEFT', {route, index})
         commit('SET_CURRENT', 0)
     },
     /**
      * 关闭右侧
      * @param commit
      * @param state
+     * @param route
      * @param index
      */
-    closeRight({commit, state}, index) {
+    closeRight({commit, state}, {route, index}) {
         // 是否关闭了当前页
         if (state.current > index) {
             router.push(state.list[index])
-            commit('SET_CURRENT', index)
         }
-        commit('CLOSE_RIGHT', index)
-    },
+        commit('CLOSE_RIGHT', {route, index})
+    }
 }
 
 export default {
@@ -228,5 +270,5 @@ export default {
     state,
     getters,
     mutations,
-    actions,
+    actions
 }

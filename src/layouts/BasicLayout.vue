@@ -11,12 +11,12 @@
             <a-layout-header :style="headerStyle">
                 <global-header :collapsed.sync="collapsed"></global-header>
             </a-layout-header>
-            <multi-tab @refresh="onRefresh"></multi-tab>
+            <multi-tab></multi-tab>
             <a-layout-content :style="contentStyle">
                 <keep-alive :include="cacheList">
-                    <router-view v-if="!refreshing"
-                                 :key="$route.fullPath"/>
+                    <router-view v-if="$route.meta.keepAlive"/>
                 </keep-alive>
+                <router-view v-if="!$route.meta.keepAlive"/>
             </a-layout-content>
         </a-layout>
     </a-layout>
@@ -36,39 +36,30 @@ export default {
                 position: 'sticky',
                 top: '0',
                 zIndex: 1000,
-                height: '48px',
+                height: '48px'
             },
             contentStyle: {
                 margin: '16px',
-                minHeight: 'auto',
+                minHeight: 'auto'
             },
             footerStyle: {
-                textAlign: 'center',
+                textAlign: 'center'
             },
             collapsible: false,
             collapsed: false,
-            refreshing: false,
+            refreshing: false
         }
     },
     computed: {
         ...mapGetters({
-            cacheList: 'multiTab/cacheList',
-        }),
+            cacheList: 'multiTab/cacheList'
+        })
     },
     methods: {
         handleToggleCollapsed() {
             this.collapsed = !this.collapsed
-        },
-        /**
-         * 刷新
-         */
-        onRefresh() {
-            this.refreshing = true
-            setTimeout(() => {
-                this.refreshing = false
-            }, 100)
-        },
-    },
+        }
+    }
 }
 </script>
 

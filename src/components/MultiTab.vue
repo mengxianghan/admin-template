@@ -16,8 +16,8 @@
                             :trigger="['contextmenu']">
                     <div>{{ item.meta.title }}</div>
                     <a-menu slot="overlay"
-                            @click="handleMenu($event,index)">
-                        <a-menu-item v-if="current === index" key="refresh">重新加载</a-menu-item>
+                            @click="handleMenu($event,item,index)">
+                        <a-menu-item key="refresh">重新加载</a-menu-item>
                         <a-menu-item key="close">关闭</a-menu-item>
                         <a-menu-item v-if="list.length > 1" key="closeOther">关闭其他</a-menu-item>
                         <a-menu-item v-if="index > 0" key="closeLeft">关闭左侧</a-menu-item>
@@ -40,13 +40,13 @@ export default {
     computed: {
         ...mapGetters({
             list: 'multiTab/list',
-            current: 'multiTab/current',
-        }),
+            current: 'multiTab/current'
+        })
     },
     watch: {
         '$route'(to) {
             this.onOpen(to)
-        },
+        }
     },
     created() {
     },
@@ -57,25 +57,24 @@ export default {
         /**
          * 菜单
          * @param {String} key 操作类型
-         * @param {Number} index 索引
+         * @param {Number} route 路由
          */
-        handleMenu({key}, index) {
+        handleMenu({key}, route, index) {
             switch (key) {
                 case 'refresh': // 刷新
-                    this.$store.dispatch('multiTab/refresh', index)
-                    this.$emit('refresh', index)
+                    this.$store.dispatch('multiTab/refresh', {route, index})
                     break
                 case 'close': // 关闭
-                    this.$store.dispatch('multiTab/close', index)
+                    this.$store.dispatch('multiTab/close', {route, index})
                     break
                 case 'closeOther': // 关闭其他
-                    this.$store.dispatch('multiTab/closeOther', index)
+                    this.$store.dispatch('multiTab/closeOther', {route, index})
                     break
                 case 'closeLeft': // 关闭左侧
-                    this.$store.dispatch('multiTab/closeLeft', index)
+                    this.$store.dispatch('multiTab/closeLeft', {route, index})
                     break
                 case 'closeRight': // 关闭右侧
-                    this.$store.dispatch('multiTab/closeRight', index)
+                    this.$store.dispatch('multiTab/closeRight', {route, index})
                     break
             }
         },
@@ -91,7 +90,10 @@ export default {
          * @param {Number} index 索引
          */
         onSwitch(index) {
-            this.$router.push(this.list[index])
+            this.$store.dispatch('multiTab/switch', {
+                route: this.list[index],
+                index
+            })
         },
         /**
          * 关闭标签页
@@ -101,11 +103,14 @@ export default {
         onClose(index, action) {
             switch (action) {
                 case 'remove':
-                    this.$store.dispatch('multiTab/close', index)
+                    this.$store.dispatch('multiTab/close', {
+                        route: this.list[index],
+                        index
+                    })
                     break
             }
-        },
-    },
+        }
+    }
 }
 </script>
 

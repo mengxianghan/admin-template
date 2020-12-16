@@ -12,7 +12,8 @@
         "meta": {
           "icon": "dashboard",
           "title": "仪表盘",
-          "isMenu": true
+          "isMenu": true,
+          "keepAlive": false
         },
         "children": [
           {
@@ -21,7 +22,8 @@
             "component": "dashboard/workplace",
             "meta": {
               "title": "工作台",
-              "isMenu": true
+              "isMenu": true,
+              "keepAlive": false
             }
           }
         ]
@@ -33,7 +35,8 @@
         "meta": {
           "icon": "table",
           "title": "列表",
-          "isMenu": true
+          "isMenu": true,
+          "keepAlive": true
         },
         "children": [
           {
@@ -42,7 +45,8 @@
             "component": "list/table",
             "meta": {
               "title": "基础列表",
-              "isMenu": true
+              "isMenu": true,
+              "keepAlive": true
             }
           }
         ]
