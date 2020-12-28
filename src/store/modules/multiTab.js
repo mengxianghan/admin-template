@@ -36,9 +36,8 @@ const mutations = {
      * @constructor
      */
     ADD_CACHE_LIST(state, route) {
-        const {name, path} = route
-        const index = findIndex(state.list, ['path', path])
-        if (index === -1) {
+        const {name} = route
+        if (!state.cacheList.includes(name)) {
             state.cacheList.push(name)
         }
     },
@@ -49,8 +48,7 @@ const mutations = {
      * @constructor
      */
     DELETE_CACHE_LIST(state, route) {
-        const {name, path} = route
-        const index = findIndex(state.list, ['path', path])
+        const index = state.cacheList.indexOf(route.name)
         if (index > -1) {
             state.cacheList.splice(index, 1)
         }
@@ -63,7 +61,6 @@ const mutations = {
      */
     PUSH(state, route) {
         state.list.push(route)
-        state.cacheList.push(route.name)
     },
     /**
      * REPLACE
@@ -93,7 +90,7 @@ const mutations = {
      */
     CLOSE(state, {route, index}) {
         state.list.splice(index, 1)
-        state.cacheList.splice(index, 1)
+        state.cacheList.splice(findIndex(state.list, ['name', route.name]), 1)
     },
     /**
      * 关闭其他
@@ -104,8 +101,11 @@ const mutations = {
      */
     CLOSE_OTHER(state, {route, index}) {
         const list = []
+        const cacheList = []
         list.push(state.list[index])
+        cacheList.push(route.name)
         state.list = list
+        state.cacheList = cacheList
     },
     /**
      * 关闭左侧
@@ -115,8 +115,10 @@ const mutations = {
      * @constructor
      */
     CLOSE_LEFT(state, {route, index}) {
+        const waitCloseList = state.list.slice(0, index).map(item => item.name)
+        const cacheList = state.cacheList.filter(item => !waitCloseList.includes(item))
+        state.cacheList = cacheList
         state.list.splice(0, index)
-        state.cacheList.splice(0, index)
     },
     /**
      * 关闭右侧
@@ -126,8 +128,10 @@ const mutations = {
      * @constructor
      */
     CLOSE_RIGHT(state, {route, index}) {
+        const waitCloseList = state.list.slice(index + 1).map(item => item.name)
+        const cacheList = state.cacheList.filter(item => !waitCloseList.includes(item))
+        state.cacheList = cacheList
         state.list.splice(index + 1)
-        state.cacheList.splice(index + 1)
     }
 }
 
@@ -180,7 +184,7 @@ const actions = {
      * @param route
      */
     refresh({dispatch, commit, state}, {route, index}) {
-        commit('REFRESH', {route})
+        commit('DELETE_CACHE_LIST', route)
         commit('SET_CURRENT', index)
 
         const {name, query} = state.list[index]
