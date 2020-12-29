@@ -90,7 +90,7 @@ const mutations = {
      */
     CLOSE(state, {route, index}) {
         state.list.splice(index, 1)
-        state.cacheList.splice(findIndex(state.list, ['name', route.name]), 1)
+        state.cacheList.splice(findIndex(state.cacheList, ['name', route.name]), 1)
     },
     /**
      * 关闭其他

@@ -8,17 +8,17 @@ import router from '@/router'
 import axios from 'axios'
 import {rootRouter, notFoundRouter} from '@/config/router'
 import * as layouts from '@/layouts'
-import {cloneDeep} from 'lodash'
+import {find} from 'lodash'
 
 const state = {
     addRoutes: [],
     menuList: [],
-    indexRouter: {},
+    indexRouter: {}
 }
 
 const getters = {
     menuList: state => state.menuList,
-    indexRouter: state => state.indexRouter,
+    indexRouter: state => state.indexRouter
 }
 
 const mutations = {
@@ -48,7 +48,7 @@ const mutations = {
      */
     SET_INDEX_ROUTER(state, indexRouter) {
         state.indexRouter = indexRouter
-    },
+    }
 }
 
 const actions = {
@@ -71,7 +71,7 @@ const actions = {
                 resolve()
             })
         })
-    },
+    }
 }
 
 export default {
@@ -79,7 +79,7 @@ export default {
     state,
     getters,
     mutations,
-    actions,
+    actions
 }
 
 /**
@@ -111,18 +111,18 @@ const generatorDynamicRouter = (data, format = true, permissionList = false) => 
     const effectiveMenu = permissionList === false ? childrenMenu : filterRouter(childrenMenu, permissionList)
     const routes = [{
         ...rootRouter,
-        children: treeToList(effectiveMenu),
+        children: treeToList(effectiveMenu)
     }]
     routes.push(notFoundRouter)
     const menus = []
     menus.push({
         ...rootRouter,
-        children: effectiveMenu,
+        children: effectiveMenu
     })
 
     return {
         routes: generator(routes),
-        menus: generator(menus),
+        menus: generator(menus)
     }
 }
 
@@ -154,8 +154,8 @@ const generator = (routerMap, parent) => {
                 isMenu,
                 target,
                 active,
-                openKeys,
-            },
+                openKeys
+            }
         }
         // 为了防止出现后端返回结果不规范，处理有可能出现拼接出两个 反斜杠
         if (!currentRouter.path.startsWith('http')) {
@@ -186,7 +186,7 @@ const listToTree = (array, parentId) => {
         if (item.parentId === parentId) {
             const child = {
                 ...item,
-                key: item.key || item.name,
+                key: item.key || item.name
             }
             // 迭代 list， 找到当前菜单相符合的所有子菜单
             const children = listToTree(array, item.id)
@@ -216,16 +216,16 @@ const treeToList = (array = []) => {
                     item.children.map(subItem => {
                         const openKeys = [
                             ...item?.meta?.openKeys ?? [],
-                            item?.meta?.active ?? item?.name,
+                            item?.meta?.active ?? item?.name
                         ]
                         subItem.meta.openKeys = openKeys
                         const isRootPath = !!subItem.path.match(/^\//g)
                         return {
                             ...subItem,
-                            path: isRootPath ? subItem.paht : `/${item.path}/${subItem.path}`.replace(/\/{2,}/g, '/'),
+                            path: isRootPath ? subItem.paht : `/${item.path}/${subItem.path}`.replace(/\/{2,}/g, '/')
                         }
-                    }),
-                ),
+                    })
+                )
             ]
         } else {
             list.push(item)
