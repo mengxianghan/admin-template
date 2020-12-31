@@ -8,111 +8,103 @@
         <a-form :form="form"
                 v-bind="formItemLayout">
             <a-form-item label="标题">
-                <a-input v-decorator="decorator.title"></a-input>
+                <a-input v-decorator="['title']"></a-input>
             </a-form-item>
             <a-form-item label="内容">
                 <tinymce-editor
-                        v-decorator="decorator.content"></tinymce-editor>
+                    v-decorator="['content']"></tinymce-editor>
             </a-form-item>
         </a-form>
     </drawer>
 </template>
 
 <script>
-    import form from '@/mixins/form'
-    import {pick} from 'lodash'
-    import {decorator} from '../mixins'
+import form from '@/mixins/form'
+import {pick, keys} from 'lodash'
 
-    export default {
-        mixins: [decorator, form],
-        props: {
-            redirectTypeList: {
-                type: Array,
-                default: () => ([])
+export default {
+    mixins: [form],
+    props: {
+        redirectTypeList: {
+            type: Array,
+            default: () => ([])
+        }
+    },
+    data() {
+        return {}
+    },
+    methods: {
+        /**
+         * 新建
+         */
+        handleCreate() {
+            this.showModal({
+                type: 'insert',
+                title: '新建'
+            })
+        },
+        /**
+         * 编辑
+         * @param {Object} record
+         */
+        handleEdit(record) {
+            this.showModal({
+                type: 'edit',
+                title: '编辑'
+            })
+            this.record = record
+            this.$nextTick(() => {
+                const values = pick(record, keys(this.form.getFieldsValue()))
+                this.form.setFieldsValue(values)
+            })
+        },
+        /**
+         * 删除
+         * @param {Ojbect} record
+         */
+        async handleDelete(record) {
+            const {code} = await this.$zs.api.message.delete({
+                id: record.id
+            })
+            if (code === '200') {
+                this.$emit('delete', record)
             }
         },
-        data() {
-            return {}
-        },
-        methods: {
-            /**
-             * 新建
-             */
-            handleCreate() {
-                this.showModal({
-                    type: 'insert',
-                    title: '新建'
-                })
-            },
-            /**
-             * 编辑
-             * @param {Object} record
-             */
-            handleEdit(record) {
-                this.showModal({
-                    type: 'edit',
-                    title: '编辑'
-                })
-                this.record = record
-                this.$nextTick(() => {
-                    const values = pick(record, keys(this.form.getFieldsValue()))
-                    this.form.setFieldsValue(values)
-                })
-            },
-            /**
-             * 删除
-             * @param {Ojbect} record
-             */
-            async handleDelete(record) {
-                const {code} = await this.$zs.api.message.delete({
-                    id: record.id
-                })
-                if (code === '200') {
-                    this.$emit('delete', record)
-                }
-            },
-            /**
-             * 确定
-             */
-            onOk() {
-                const {record, modal} = this
-                // 验证表单
-                this.form.validateFieldsAndScroll(async (error, values) => {
-                    if (!error) {
-                        this.showLoading()
-                        const params = {
-                            id: record.id,
-                            ...params
-                        }
-                        let result
-                        if (modal.type === 'insert') {
-                            // 新建
-                            result = await this.insert(params)
-                        } else if (modal.type === 'edit') {
-                            // 编辑
-                            result = await this.edit(params)
-                        }
-                        this.hideLoading()
-                        if (result.code === '200') {
-                            this.reset()
-                            this.hideModal()
-                            this.$emit('ok', {
-                                record: params
-                            })
-                        }
+        /**
+         * 确定
+         */
+        onOk() {
+            const {record, modal} = this
+            // 验证表单
+            this.form.validateFieldsAndScroll(async (error, values) => {
+                if (!error) {
+                    this.showLoading()
+                    const params = {
+                        id: record.id,
+                        ...values
                     }
-                })
-            },
-            /**
-             * 取消
-             */
-            onCancel() {
-                this.reset()
-                this.hideModal()
-                this.$emit('cancel')
-            }
+                    const result = this.$xy.api.save()
+                    this.hideLoading()
+                    if (result.code === '200') {
+                        this.reset()
+                        this.hideModal()
+                        this.$emit('ok', {
+                            record: params
+                        })
+                    }
+                }
+            })
+        },
+        /**
+         * 取消
+         */
+        onCancel() {
+            this.reset()
+            this.hideModal()
+            this.$emit('cancel')
         }
     }
+}
 </script>
 
 <style scoped>
