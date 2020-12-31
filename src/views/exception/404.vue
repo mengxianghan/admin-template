@@ -12,16 +12,16 @@
 </template>
 
 <script>
-    export default {
-        methods: {
-            /**
-             * 返回
-             */
-            handleBack() {
-                this.$router.back()
-            }
+export default {
+    methods: {
+        /**
+         * 返回
+         */
+        handleBack() {
+            this.$router.back()
         }
     }
+}
 </script>
 
 <style scoped>

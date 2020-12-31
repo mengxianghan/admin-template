@@ -31,16 +31,16 @@ export default {
     props: {
         gutter: {
             type: [String, Number],
-            default: 24,
+            default: 24
         },
         span: {
             type: [String, Number],
-            default: 12,
+            default: 12
         },
         tip: {
             type: String,
-            default: '',
-        },
+            default: ''
+        }
     },
     data() {
         return {}
@@ -51,7 +51,7 @@ export default {
     },
     mounted() {
     },
-    methods: {},
+    methods: {}
 }
 </script>
 

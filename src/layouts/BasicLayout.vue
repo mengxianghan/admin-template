@@ -31,7 +31,7 @@ export default {
         return {
             headerStyle: {
                 background: '#fff',
-                boxShadow: '0 1px 4px rgba(0, 21, 41, .08)',
+                //boxShadow: '0 1px 4px rgba(0, 21, 41, .08)',
                 padding: '0',
                 position: 'sticky',
                 top: '0',

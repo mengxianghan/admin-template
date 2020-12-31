@@ -5,7 +5,7 @@
 <script>
 export default {
     name: 'RouteView',
-    computed: {},
+    computed: {}
 }
 </script>
 

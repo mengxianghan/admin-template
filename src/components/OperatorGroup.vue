@@ -1,21 +1,18 @@
 <template>
-    <div class="operator-group">
+    <a-space v-bind="$attrs"
+             class="operator-group">
         <slot></slot>
-    </div>
+    </a-space>
 </template>
 
 <script>
-    export default {
-        name: 'OperatorGroup'
-    };
+export default {
+    name: 'OperatorGroup'
+}
 </script>
 
 <style lang="scss" scoped>
-    .operator-group {
-        margin-bottom: 18px;
-
-        button {
-            margin-right: 8px;
-        }
-    }
+.operator-group {
+    margin-bottom: 16px;
+}
 </style>

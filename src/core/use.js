@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import antd from 'ant-design-vue'
-import * as ali from '@/utils/ali'
 import api from '@/api'
+import '@/directive/action'
 import './permission'
 import '@/components'
 import 'nprogress/nprogress.css'
@@ -16,6 +16,5 @@ if (process.env.VUE_APP_MOCK === 'true') {
 }
 
 window.$xy = Vue.prototype.$xy = {
-    ali,
     api
 }

@@ -40,9 +40,9 @@
         },
         "children": [
           {
-            "path": "table",
-            "name": "listTable",
-            "component": "list/table",
+            "path": "index",
+            "name": "list",
+            "component": "list/index",
             "meta": {
               "title": "基础列表",
               "isMenu": true,

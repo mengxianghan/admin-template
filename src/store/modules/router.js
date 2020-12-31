@@ -8,7 +8,7 @@ import router from '@/router'
 import axios from 'axios'
 import {rootRouter, notFoundRouter} from '@/config/router'
 import * as layouts from '@/layouts'
-import {find} from 'lodash'
+import {merge, findIndex} from 'lodash'
 
 const state = {
     addRoutes: [],
@@ -57,11 +57,11 @@ const actions = {
      * @param commit
      * @returns {Promise}
      */
-    getRouterList({commit}) {
+    getRouterList({commit, rootState}) {
         return new Promise(resolve => {
             axios.get('/router.json').then(res => {
                 const {data} = res.data
-                const {routes, menus} = generatorDynamicRouter(data.list, data.format)
+                const {routes, menus} = generatorDynamicRouter(data.list, data.format, rootState.user.permission)
                 const menuList = (menus.find(item => item.path === '/') && menus.find(item => item.path === '/').children) || []
                 const indexRouter = getIndexRouter(menuList)
                 router.addRoutes(routes)
@@ -85,15 +85,20 @@ export default {
 /**
  * 过滤无权限菜单
  */
-const filterRouter = (routers, permissionList) => {
+const filterRouter = (routers, permission) => {
     return routers.filter(item => {
-        const permission = item.meta.permission || []
-        const permissionArr = permission ? permission instanceof Array ? permission : permission.split(',') : []
-        const hasAuth = find(permissionList, (o) => permissionArr.includes(o.path)) || permissionArr.includes('*') ? true : false
+        const routePermission = item.meta.permission || []
+        const routePermissionArr = routePermission ? routePermission instanceof Array ? routePermission : routePermission.split(',') : []
+        const index = findIndex(permission, o => routePermissionArr.includes(o.permission))
+        const hasAuth = index > -1 || routePermissionArr.includes('*') ? true : false
         if (hasAuth) {
-            const route = item
+            const route = merge(item, {
+                meta: {
+                    action: index > -1 ? permission[index]['action'] : '*'
+                }
+            })
             if (item.children && item.children.length > 0) {
-                route.children = filterRouter(item.children, permissionList)
+                route.children = filterRouter(item.children, permission)
             }
             return route
         }
@@ -104,11 +109,11 @@ const filterRouter = (routers, permissionList) => {
  * 动态生成菜单
  * @returns {Promise<Router>}
  */
-const generatorDynamicRouter = (data, format = true, permissionList = false) => {
+const generatorDynamicRouter = (data, format = true, permission = false) => {
     // 子菜单
     const childrenMenu = format ? listToTree(data, 0) : data
     // 有效菜单
-    const effectiveMenu = permissionList === false ? childrenMenu : filterRouter(childrenMenu, permissionList)
+    const effectiveMenu = process.env.VUE_APP_PERMISSION === 'true' ? filterRouter(childrenMenu, permission) : childrenMenu
     const routes = [{
         ...rootRouter,
         children: treeToList(effectiveMenu)
@@ -241,7 +246,7 @@ const treeToList = (array = []) => {
  * @returns {{}}
  */
 const getIndexRouter = (menuList) => {
-    let index = {}
+    let index = null
     for (let item of menuList) {
         if (item.children && item.children.length) {
             let temp = getIndexRouter(item.children)

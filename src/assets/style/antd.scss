@@ -1,3 +1,8 @@
+// DatePicker
+.ant-calendar-picker {
+    width: 100%
+}
+
 // Dropdown
 .ant-dropdown-menu-item,
 .ant-dropdown-menu-submenu-title {
@@ -8,4 +13,14 @@
 // ToolTip
 .ant-tooltip {
     font-size: 12px;
+}
+
+// Form
+.ant-form-explain {
+    font-size: 12px;
+    position: absolute;
+}
+
+.ant-form-item {
+    margin-bottom: 16px;
 }

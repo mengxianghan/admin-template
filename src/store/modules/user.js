@@ -3,18 +3,21 @@
  * @Date: 2020-10-08
  * @Description: user.js
  */
-import storage from "@/utils/storage"
+import storage from '@/utils/storage'
+import {message} from 'ant-design-vue'
 
 const state = {
     isLogin: storage.getIsLogin() || false,
     userInfo: storage.getUserInfo() || null,
-    token: storage.getToken() || ''
+    token: storage.getToken() || '',
+    permission: storage.getPermission() || []
 }
 
 const getters = {
     isLogin: state => state.isLogin,
     userInfo: state => state.userInfo,
-    token: state => state.token
+    token: state => state.token,
+    permission: state => state.permission
 }
 
 const mutations = {
@@ -47,6 +50,16 @@ const mutations = {
     SET_TOKEN(state, token = '') {
         state.token = token
         storage.setToken(token)
+    },
+    /**
+     * 设置权限列表
+     * @param state
+     * @param {Array} permission
+     * @constructor
+     */
+    SET_PERMISSION(state, permission = []) {
+        state.permission = permission
+        storage.setPermission(permission)
     }
 }
 
@@ -58,13 +71,10 @@ const actions = {
      * @param {String} password
      * @returns {Promise<unknown>}
      */
-    login({commit}, {username = '', password = ''}) {
+    login({commit, dispatch, rootState}, params) {
         return new Promise(async (resolve, reject) => {
-            const res = await window.$xy.api.user.login({
-                username,
-                password
-            })
-            const {code, data} = res
+            const result = await window.$xy.api.user.login(params)
+            const {code, data} = result
             if (code === '200') {
                 const {username, token} = data
                 commit('SET_USER_INFO', {
@@ -73,7 +83,7 @@ const actions = {
                 commit('SET_IS_LOGIN', true)
                 commit('SET_TOKEN', token)
             }
-            resolve(res)
+            resolve(result)
         })
     },
     /**

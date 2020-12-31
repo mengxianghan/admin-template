@@ -12,9 +12,10 @@ import {upperFirst} from 'lodash'
  * cookie       cookie
  */
 const storageMap = [
-    {key: 'token', type: 'local'},
-    {key: 'userInfo', type: 'local', dataType: 'object'},
-    {key: 'isLogin', type: 'local'}
+    {key: 'token', type: 'session'},
+    {key: 'userInfo', type: 'session', dataType: 'object'},
+    {key: 'isLogin', type: 'session'},
+    {key: 'permission', type: 'session', dataType: 'object'}
 ]
 
 const storage = {}

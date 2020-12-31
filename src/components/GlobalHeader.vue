@@ -14,7 +14,7 @@
             </a-tooltip>
         </div>
         <div class="global-header__right">
-            <!--<div class="global-header__action">
+<!--            <div class="global-header__action">
                 <a-badge count="5">
                     <a-icon type="bell"></a-icon>
                 </a-badge>

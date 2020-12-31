@@ -29,3 +29,8 @@ img, video, audio {
     background-color: rgba(69, 90, 100, 0.2);
     border-radius: 6px;
 }
+
+input:-internal-autofill-previewed,
+input:-internal-autofill-selected {
+    transition: background-color 5000s ease-in-out 0s !important;
+}

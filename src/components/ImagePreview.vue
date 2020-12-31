@@ -8,31 +8,31 @@
 </template>
 
 <script>
-    export default {
-        name: 'ImagePreview',
-        data() {
-            return {
-                visible: false,
-                src: ''
-            }
+export default {
+    name: 'ImagePreview',
+    data() {
+        return {
+            visible: false,
+            src: ''
+        }
+    },
+    methods: {
+        show(src) {
+            this.visible = true
+            this.src = src
         },
-        methods: {
-            show(src) {
-                this.visible = true
-                this.src = src
-            },
-            hide() {
-                this.visible = false
-            }
+        hide() {
+            this.visible = false
         }
     }
+}
 </script>
 
 <style lang="scss" scoped>
-    .image-preview {
-        &__image {
-            width: 100%;
-            border-radius: 4px;
-        }
+.image-preview {
+    &__image {
+        width: 100%;
+        border-radius: 4px;
     }
+}
 </style>

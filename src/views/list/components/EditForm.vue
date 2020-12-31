@@ -63,37 +63,44 @@ export default {
          * @param {Ojbect} record
          */
         async handleDelete(record) {
-            const {code} = await this.$zs.api.message.delete({
-                id: record.id
-            })
-            if (code === '200') {
-                this.$emit('delete', record)
+            try {
+                const {code} = await this.$zs.api.message.delete({
+                    id: record.id
+                })
+                if (code === '200') {
+                    this.$parent.updatePagination()
+                    this.$emit('success')
+                }
+            } catch (e) {
+
             }
         },
         /**
          * 确定
          */
         onOk() {
-            const {record, modal} = this
-            // 验证表单
-            this.form.validateFieldsAndScroll(async (error, values) => {
-                if (!error) {
-                    this.showLoading()
-                    const params = {
-                        id: record.id,
-                        ...values
+            try {
+                const {record, modal} = this
+                // 验证表单
+                this.form.validateFieldsAndScroll(async (error, values) => {
+                    if (!error) {
+                        this.showLoading()
+                        const params = {
+                            id: record?.id ?? '',
+                            ...values
+                        }
+                        const result = this.$xy.api.save(params)
+                        this.hideLoading()
+                        if (result.code === '200') {
+                            this.reset()
+                            this.hideModal()
+                            this.$emit('success')
+                        }
                     }
-                    const result = this.$xy.api.save()
-                    this.hideLoading()
-                    if (result.code === '200') {
-                        this.reset()
-                        this.hideModal()
-                        this.$emit('ok', {
-                            record: params
-                        })
-                    }
-                }
-            })
+                })
+            } catch (e) {
+
+            }
         },
         /**
          * 取消
